@@ -18,10 +18,9 @@ const StyleButton: React.FC<StyleButtonProps> = ({
   selectedStyle, 
   onStyleChange,
   styles = [
-    { id: 'professional', name: 'Professional', description: 'Formal and business-appropriate tone' },
-    { id: 'casual', name: 'Casual', description: 'Relaxed and conversational tone' },
-    { id: 'creative', name: 'Creative', description: 'Engaging and imaginative tone' },
-    { id: 'technical', name: 'Technical', description: 'Precise and industry-specific language' },
+    { id: 'Malay', name: 'Malay', description: 'malay language' },
+    { id: 'Chinese', name: 'Chinese', description: 'chinese language' },
+    { id: 'Mix', name: 'Mix', description: 'mix of malay and chinese language' },
   ]
 }) => {
   return (

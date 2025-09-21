@@ -1,62 +1,32 @@
-"use client"
-import React, { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import React, { useState } from 'react'
 import SideNavBar from '../components/SideNavBar'
 import Result from '../components/Result'
 import LoadingState from '../components/LoadingState'
 
 // OutputContent page - displays localization results (second wireframe)
 const OutputContent: React.FC = () => {
-  const router = useRouter()
-  const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
-  const [results, setResults] = useState<Array<{
-    language: string
-    imageUrl: string
-    confidence?: number
-  }>>([])
-
-  // Get the selected style from URL parameters
-  const selectedStyle = searchParams?.get('style') || 'Malay'
-
-  useEffect(() => {
-    // Generate results based on selected style
-    const generateResults = () => {
-      const basePath = '/outputImg'
-      let imageUrl = ''
-      let language = ''
-
-      switch (selectedStyle.toLowerCase()) {
-        case 'malay':
-          imageUrl = `${basePath}/Localized_Malay.png`
-          language = 'Malay'
-          break
-        case 'chinese':
-          imageUrl = `${basePath}/Localized_Chinese.png`
-          language = 'Chinese'
-          break
-        case 'mix':
-          imageUrl = `${basePath}/Localized_Mix.png`
-          language = 'Mix (Malay & Chinese)'
-          break
-        default:
-          imageUrl = `${basePath}/Localized_Malay.png`
-          language = 'Malay'
-      }
-
-      setResults([{
-        language,
-        imageUrl,
-        confidence: 0.95
-      }])
+  const [results] = useState([
+    {
+      language: 'Spanish (ES)',
+      content: 'Bienvenido a nuestro servicio de localización de contenido. Esta herramienta te ayuda a adaptar tu contenido para diferentes mercados y audiencias de manera efectiva.',
+      confidence: 0.95
+    },
+    {
+      language: 'French (FR)', 
+      content: 'Bienvenue dans notre service de localisation de contenu. Cet outil vous aide à adapter votre contenu pour différents marchés et audiences de manière efficace.',
+      confidence: 0.92
+    },
+    {
+      language: 'German (DE)',
+      content: 'Willkommen bei unserem Content-Lokalisierungsservice. Dieses Tool hilft Ihnen dabei, Ihre Inhalte effektiv für verschiedene Märkte und Zielgruppen anzupassen.',
+      confidence: 0.89
     }
-
-    generateResults()
-  }, [selectedStyle])
+  ])
 
   const handleNewContent = () => {
     // Navigate back to content input page
-    router.push('/')
+    window.location.href = '/content-localized'
   }
 
   const handleCopy = (content: string, language: string) => {
@@ -65,8 +35,15 @@ const OutputContent: React.FC = () => {
   }
 
   const handleDownload = (content: string, language: string) => {
-    console.log(`Downloaded ${language} content`)
-    // Handle download logic
+    const blob = new Blob([content], { type: 'text/plain' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `localized-content-${language.toLowerCase().replace(/\s+/g, '-')}.txt`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
   }
 
   const handleRegenerateAll = () => {
@@ -91,9 +68,6 @@ const OutputContent: React.FC = () => {
               <p className="text-gray-600 mt-1">Review and download your localized content</p>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-500">
-                Style: {selectedStyle}
-              </span>
               <button 
                 onClick={handleRegenerateAll}
                 disabled={isLoading}
@@ -133,9 +107,9 @@ const OutputContent: React.FC = () => {
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-purple-600">
-                      {selectedStyle}
+                      {Math.round(results.reduce((acc, r) => acc + r.content.length, 0) / 1000)}k
                     </div>
-                    <div className="text-sm text-gray-600">Selected Style</div>
+                    <div className="text-sm text-gray-600">Total Characters</div>
                   </div>
                 </div>
               </div>
@@ -154,12 +128,9 @@ const OutputContent: React.FC = () => {
               <div className="mt-8 bg-white rounded-lg border border-gray-200 p-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Additional Actions</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <button 
-                    onClick={() => router.push('/')}
-                    className="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left"
-                  >
-                    <div className="font-medium text-gray-800">Try Different Style</div>
-                    <div className="text-sm text-gray-600 mt-1">Go back and select a different localization style</div>
+                  <button className="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left">
+                    <div className="font-medium text-gray-800">Add More Languages</div>
+                    <div className="text-sm text-gray-600 mt-1">Localize to additional target markets</div>
                   </button>
                   <button className="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left">
                     <div className="font-medium text-gray-800">Refine Results</div>

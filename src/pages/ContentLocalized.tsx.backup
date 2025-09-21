@@ -1,6 +1,5 @@
 "use client"
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import SideNavBar from '../components/SideNavBar'
 import DropZone from '../components/DropZone'
 import StyleButton from '../components/StyleButton'
@@ -9,14 +8,13 @@ import LoadingState from '../components/LoadingState'
 
 // ContentLocalized page - main interface for content localization (first wireframe)
 const ContentLocalized: React.FC = () => {
-  const router = useRouter()
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
-  const [selectedStyle, setSelectedStyle] = useState<string>('Malay')
+  const [selectedStyle, setSelectedStyle] = useState<string>('professional')
   const [isProcessing, setIsProcessing] = useState(false)
 
   const handleNewContent = () => {
     setSelectedFiles([])
-    setSelectedStyle('Malay')
+    setSelectedStyle('professional')
     setIsProcessing(false)
   }
 
@@ -32,11 +30,10 @@ const ContentLocalized: React.FC = () => {
     console.log('Processing message:', message)
     setIsProcessing(true)
     
-    // Simulate processing with hardcoded localization
+    // Simulate processing
     setTimeout(() => {
       setIsProcessing(false)
-      // Navigate to output page with the selected style
-      router.push(`/output-content?style=${selectedStyle}`)
+      // Navigate to output page or show results
     }, 3000)
   }
 
